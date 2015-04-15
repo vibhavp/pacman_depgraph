@@ -24,6 +24,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 (require racket/port)
 (require racket/string)
 
+(define output-file-name (open-output-file "out.dot" #:mode 'text))
+
 (define package-list (string-split
                       (with-output-to-string
                         (lambda ()
@@ -41,14 +43,14 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
                              (lambda () (system command))) 17))))
 
 (define (gen-graph)
-  (printf "digraph depgraph {\n")
+  (fprintf output-file-name "digraph depgraph {\n")
   (for ([package package-list])
     (for ([dep (dep-list package)])
       (let ([index-of-> (index-of (string->list dep) #\>)])
-        (fprintf (current-output-port)
+        (fprintf output-file-name
                  "\"~a\" -> \"~a\";\n"
                  package (if index-of-> (substring dep 0 index-of->) dep)))))
-  (print "}"))
+  (fprintf output-file-name "}"))
 
 (module* main #f
   (gen-graph))
