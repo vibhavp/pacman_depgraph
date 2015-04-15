@@ -50,7 +50,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         (fprintf output-file-name
                  "\"~a\" -> \"~a\";\n"
                  package (if index-of-> (substring dep 0 index-of->) dep)))))
-  (fprintf output-file-name "}"))
+  (fprintf output-file-name "}")
+  (printf "Done!"))
 
 (module* main #f
   (gen-graph))
