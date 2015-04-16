@@ -46,10 +46,17 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   (fprintf output-file-name "digraph depgraph {\n")
   (for ([package package-list])
     (for ([dep (dep-list package)])
-      (let ([index-of-> (index-of (string->list dep) #\>)])
+      (let* ([index-of-> (index-of (string->list dep) #\>)]
+             [index-of-= (index-of (string->list dep) #\=)]
+             [proper-dep (if (or index-of-> index-of-=) (substring dep 0 (or index-of->
+                                                                             index-of-=))
+                                                                   dep)])
         (fprintf output-file-name
                  "\"~a\" -> \"~a\";\n"
-                 package (if index-of-> (substring dep 0 index-of->) dep)))))
+                 package proper-dep)
+        (fprintf (current-output-port)
+                 "\"~a\" -> \"~a\";\n"
+                 package proper-dep))))
   (fprintf output-file-name "}")
   (printf "Done!"))
 
